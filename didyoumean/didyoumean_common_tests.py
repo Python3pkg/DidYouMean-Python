@@ -83,4 +83,4 @@ class TestWithStringFunction(object):
             self.assertEqual(before, after)
 
 if __name__ == '__main__':
-    print(sys.version_info)
+    print((sys.version_info))

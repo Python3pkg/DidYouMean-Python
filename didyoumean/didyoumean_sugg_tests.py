@@ -1,14 +1,14 @@
 # -*- coding: utf-8
 """Unit tests for get_suggestions_for_exception."""
-from didyoumean_internal import get_suggestions_for_exception, quote, \
+from .didyoumean_internal import get_suggestions_for_exception, quote, \
     STAND_MODULES, AVOID_REC_MSG, \
     APPLY_REMOVED_MSG, BUFFER_REMOVED_MSG, CMP_REMOVED_MSG, \
     CMP_ARG_REMOVED_MSG, EXC_ATTR_REMOVED_MSG, LONG_REMOVED_MSG, \
     MEMVIEW_ADDED_MSG, RELOAD_REMOVED_MSG, STDERR_REMOVED_MSG, \
     NO_KEYWORD_ARG_MSG
-import didyoumean_common_tests as common
+from . import didyoumean_common_tests as common
 import unittest2
-import didyoumean_re as re
+from . import didyoumean_re as re
 import warnings
 import sys
 import math
@@ -644,16 +644,16 @@ class NameErrorTests(GetSuggestionsTests):
     def test_added_2_7(self):
         """Test for names added in 2.7."""
         before, after = before_and_after((2, 7))
-        for name, suggs in {
+        for name, suggs in list({
                 'memoryview': [MEMVIEW_ADDED_MSG],
-                }.items():
+                }.items()):
             self.throws(name, NAMEERROR, suggs, before)
             self.runs(name, after)
 
     def test_removed_3_0(self):
         """Test for names removed in 3.0."""
         before, after = before_and_after((3, 0))
-        for name, suggs in {
+        for name, suggs in list({
                 'StandardError': [STDERR_REMOVED_MSG],
                 'apply': [APPLY_REMOVED_MSG],
                 'basestring': [],
@@ -670,25 +670,25 @@ class NameErrorTests(GetSuggestionsTests):
                 'unichr': [],
                 'unicode': ["'code' (local)"],
                 'xrange': ["'range' (builtin)"],
-                }.items():
+                }.items()):
             self.runs(name, before)
             self.throws(name, NAMEERROR, suggs, after)
 
     def test_added_3_0(self):
         """Test for names added in 3.0."""
         before, after = before_and_after((3, 0))
-        for name, suggs in {
+        for name, suggs in list({
                 'ascii': [],
                 'ResourceWarning': ["'FutureWarning' (builtin)"],
                 '__build_class__': [],
-                }.items():
+                }.items()):
             self.throws(name, NAMEERROR, suggs, before)
             self.runs(name, after)
 
     def test_added_3_3(self):
         """Test for names added in 3.3."""
         before, after = before_and_after((3, 3))
-        for name, suggs in {
+        for name, suggs in list({
                 'BrokenPipeError': [],
                 'ChildProcessError': [],
                 'ConnectionAbortedError': [],
@@ -704,25 +704,25 @@ class NameErrorTests(GetSuggestionsTests):
                 'ProcessLookupError': ["'LookupError' (builtin)"],
                 'TimeoutError': [],
                 '__loader__': [],
-                }.items():
+                }.items()):
             self.throws(name, NAMEERROR, suggs, before)
             self.runs(name, after)
 
     def test_added_3_4(self):
         """Test for names added in 3.4."""
         before, after = before_and_after((3, 4))
-        for name, suggs in {
+        for name, suggs in list({
                 '__spec__': [],
-                }.items():
+                }.items()):
             self.throws(name, NAMEERROR, suggs, before)
             self.runs(name, after)
 
     def test_added_3_5(self):
         """Test for names added in 3.5."""
         before, after = before_and_after((3, 5))
-        for name, suggs in {
+        for name, suggs in list({
                 'StopAsyncIteration': ["'StopIteration' (builtin)"],
-                }.items():
+                }.items()):
             self.throws(name, NAMEERROR, suggs, before)
             self.runs(name, after)
 
@@ -1003,11 +1003,11 @@ class AttributeErrorTests(GetSuggestionsTests):
         """Different methos (iterXXX) have been removed from dict."""
         before, after = before_and_after((3, 0))
         code = 'dict().{0}()'
-        for method, sugg in {
+        for method, sugg in list({
             'iterkeys': [],
             'itervalues': ["'values'"],
             'iteritems': ["'items'"],
-        }.items():
+        }.items()):
             meth_code, = format_str(code, method)
             self.runs(meth_code, before)
             self.throws(meth_code, ATTRIBUTEERROR, sugg, after)
@@ -1015,11 +1015,11 @@ class AttributeErrorTests(GetSuggestionsTests):
     def test_remove_exc_attr(self):
         """Attribute sys.exc_xxx have been removed."""
         before, mid, after = before_mid_and_after((3, 0), (3, 5))
-        for att_name, sugg in {
+        for att_name, sugg in list({
             'exc_type': [EXC_ATTR_REMOVED_MSG],
             'exc_value': [EXC_ATTR_REMOVED_MSG],
             'exc_traceback': ["'last_traceback'", EXC_ATTR_REMOVED_MSG],
-        }.items():
+        }.items()):
             code = 'import sys\nsys.' + att_name
             if att_name == 'exc_type':
                 self.runs(code, before)  # others may be undef
@@ -1243,7 +1243,7 @@ class TypeErrorTests(GetSuggestionsTests):
         }
         obj = 'CustomClass()'
         sugg = 'implement "{0}" on CustomClass'
-        for op, suggestions in ops.items():
+        for op, suggestions in list(ops.items()):
             code = op.format(obj)
             magic, sugg_attr = suggestions
             sugg_unary = sugg.format(magic)
@@ -1763,11 +1763,11 @@ class TypeErrorTests(GetSuggestionsTests):
     def test_not_callable(self):
         """Sometimes, one uses parenthesis instead of brackets."""
         typo, getitem = '(0)', '[0]'
-        for ex, sugg in {
+        for ex, sugg in list({
             '[0]': "'list[value]'",
             '{0: 0}': "'dict[value]'",
             '"a"': "'str[value]'",
-        }.items():
+        }.items()):
             self.throws(ex + typo, NOTCALLABLE, sugg)
             self.runs(ex + getitem)
         for ex in ['1', 'set()']:
@@ -2465,5 +2465,5 @@ class AnyErrorTests(GetSuggestionsTests):
 
 
 if __name__ == '__main__':
-    print(sys.version_info)
+    print((sys.version_info))
     unittest2.main()

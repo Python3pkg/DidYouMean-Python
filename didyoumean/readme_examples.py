@@ -1,7 +1,7 @@
 # -*- coding: utf-8
 """Code to generate examples in README.md."""
-from didyoumean_internal import add_suggestions_to_exception
-import didyoumean_common_tests as common
+from .didyoumean_internal import add_suggestions_to_exception
+from . import didyoumean_common_tests as common
 import os
 
 
@@ -123,9 +123,9 @@ def main():
     for (_, exc_types), exc_examples in sorted(examples.items()):
         if not isinstance(exc_types, tuple):
             exc_types = (exc_types, )
-        print("### {0}\n".format("/".join(e.__name__ for e in exc_types)))
+        print(("### {0}\n".format("/".join(e.__name__ for e in exc_types))))
         for (_, desc), codes in sorted(exc_examples.items()):
-            print("##### {0}\n".format(desc))
+            print(("##### {0}\n".format(desc)))
             for code in codes:
                 exc = common.get_exception(code)
                 if exc is None:
@@ -142,11 +142,11 @@ def main():
                         after = standardise(str_func(value))
                         if before == after:
                             after += " (unchanged on this version of Python)"
-                print("""```python
+                print(("""```python
 {0}
 #>>> Before: {1}
 #>>> After: {2}
-```""".format(standardise(code), before, after))
+```""".format(standardise(code), before, after)))
 
 if __name__ == '__main__':
     main()

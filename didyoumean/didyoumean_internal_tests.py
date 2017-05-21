@@ -1,12 +1,12 @@
 # -*- coding: utf-8
 """Unit tests for code in didyoumean_internal.py."""
-from didyoumean_internal import quote, get_suggestion_string,\
+from .didyoumean_internal import quote, get_suggestion_string,\
     add_string_to_exception, get_func_by_name,\
     get_objects_in_frame, get_subclasses, get_types_for_str,\
     get_types_for_str_using_inheritance,\
     get_types_for_str_using_names
-import didyoumean_common_tests as common
-from didyoumean_common_tests import CommonTestOldStyleClass2,\
+from . import didyoumean_common_tests as common
+from .didyoumean_common_tests import CommonTestOldStyleClass2,\
     CommonTestNewStyleClass2  # to have these 2 in defined names
 import unittest2
 import itertools
@@ -605,16 +605,16 @@ def get_instance(klass):
     later on. Also, the order of the values has its importance for similar
     reasons.
     """
-    my_unicode = str if sys.version_info >= (3, 0) else unicode
+    my_unicode = str if sys.version_info >= (3, 0) else str
     values_tried = [my_unicode(), bytes(), 0]
-    for nb_arg in reversed(range(6)):
+    for nb_arg in reversed(list(range(6))):
         for p in itertools.product(values_tried, repeat=nb_arg):
             try:
                 return klass(*p), p
             except (TypeError, AttributeError) as e:
                 pass
             except Exception as e:
-                print(type(e), e)
+                print((type(e), e))
     return None
 
 
@@ -643,5 +643,5 @@ def generate_add_string_to_exc_tests():
 
 
 if __name__ == '__main__':
-    print(sys.version_info)
+    print((sys.version_info))
     unittest2.main()

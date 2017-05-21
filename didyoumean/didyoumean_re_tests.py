@@ -1,9 +1,9 @@
 # -*- coding: utf-8
 """Unit tests for regexps from didyoumean_re.py."""
 import unittest2
-import didyoumean_re as re
+from . import didyoumean_re as re
 import sys
-from didyoumean_internal import get_subclasses
+from .didyoumean_internal import get_subclasses
 
 NO_GROUP = ((), dict())
 # Various technical flags to check more that meet the eyes in tests
@@ -49,7 +49,7 @@ class RegexTests(unittest2.TestCase):
             self.assertTrue(regexp.startswith('^'))
             self.assertTrue(regexp.endswith('$'))
         found = False
-        for other_name, other_re in re.ALL_REGEXPS.items():
+        for other_name, other_re in list(re.ALL_REGEXPS.items()):
             if other_re == regexp:
                 found = True
                 if CHECK_RE_NAME:
@@ -154,7 +154,7 @@ class RegexTests(unittest2.TestCase):
                 "type object 'SomeClass' has no attribute 'attri'",
             ],
         }
-        for groups, msgs in group_msg.items():
+        for groups, msgs in list(group_msg.items()):
             _, attr = groups
             named_groups = {'attr': attr}
             results = (groups, named_groups)
@@ -333,7 +333,7 @@ class RegexTests(unittest2.TestCase):
             "'str' object cannot be interpreted as an integer": 'str',
             "'list' object cannot be interpreted as an integer": 'list',
         }
-        for msg, typ in msgs.items():
+        for msg, typ in list(msgs.items()):
             results = ((typ,), dict())
             self.re_matches(msg, re.CANNOT_BE_INTERPRETED_INT_RE, results)
 
@@ -344,7 +344,7 @@ class RegexTests(unittest2.TestCase):
             "range() integer end argument expected, got list.": 'list',
             "range() integer start argument expected, got list.": 'list',
         }
-        for msg, typ in msgs.items():
+        for msg, typ in list(msgs.items()):
             results = ((typ,), dict())
             self.re_matches(msg, re.INTEGER_EXPECTED_GOT_RE, results)
 
@@ -359,7 +359,7 @@ class RegexTests(unittest2.TestCase):
             # PyPy
             "list index must be an integer, not str": "str",
         }
-        for msg, typ in msgs.items():
+        for msg, typ in list(msgs.items()):
             results = ((typ,), dict())
             self.re_matches(msg, re.INDICES_MUST_BE_INT_RE, results)
 
@@ -648,7 +648,7 @@ class RegexTests(unittest2.TestCase):
             # PyPy/PyPy3
             'length': "'generator' has no length",
         }
-        for name, msg in msgs.items():
+        for name, msg in list(msgs.items()):
             groups = ('generator', name)
             results = (groups, dict())
             self.re_matches(msg, re.OBJECT_HAS_NO_FUNC_RE, results)
@@ -743,11 +743,11 @@ class RegexTests(unittest2.TestCase):
             "Set": "Set changed size during iteration",
             "dictionnary": "dictionnary changed size during iteration",
         }
-        for name, msg in msgs.items():
+        for name, msg in list(msgs.items()):
             groups = (name, )
             results = (groups, dict())
             self.re_matches(msg, re.SIZE_CHANGED_DURING_ITER_RE, results)
 
 if __name__ == '__main__':
-    print(sys.version_info)
+    print((sys.version_info))
     unittest2.main()

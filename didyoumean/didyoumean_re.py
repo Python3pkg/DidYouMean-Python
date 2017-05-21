@@ -129,7 +129,7 @@ OP_NOT_SUPP_BETWEEN_INSTANCES_RE = r"^'[<=>]+' not supported between " \
         r"instances of '{0}' and '{0}'$".format(TYPE_NAME)
 
 ALL_REGEXPS = dict((k, v)
-                   for k, v in dict(locals()).items()
+                   for k, v in list(dict(locals()).items())
                    if k.endswith('_RE'))
 
 
@@ -143,6 +143,6 @@ def match(pattern, string):
 
 
 if __name__ == '__main__':
-    for name, val in ALL_REGEXPS.items():
+    for name, val in list(ALL_REGEXPS.items()):
         if not (val.startswith('^') and val.endswith('$')):
-            print("Missing ^$ for ", name)
+            print(("Missing ^$ for ", name))

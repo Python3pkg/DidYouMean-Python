@@ -2,7 +2,7 @@
 """Logic to add suggestions to exceptions."""
 import keyword
 import difflib
-import didyoumean_re as re
+from . import didyoumean_re as re
 import itertools
 import inspect
 import errno
@@ -170,7 +170,7 @@ def merge_dict(*dicts):
     """
     ret = dict()
     for dict_ in dicts:
-        for key, val in dict_.items():
+        for key, val in list(dict_.items()):
             ret.setdefault(key, []).append(val)
     return ret
 
@@ -179,7 +179,7 @@ ScopedObj = namedtuple('ScopedObj', 'obj scope')
 
 def add_scope_to_dict(dict_, scope):
     """Convert name:obj dict to name:ScopedObj(obj,scope) dict."""
-    return dict((k, ScopedObj(v, scope)) for k, v in dict_.items())
+    return dict((k, ScopedObj(v, scope)) for k, v in list(dict_.items()))
 
 
 def get_objects_in_frame(frame):
@@ -271,7 +271,7 @@ def suggest_name_as_attribute(name, objdict):
 
     Example: 'do_stuff()' -> 'self.do_stuff()'.
     """
-    for nameobj, objs in objdict.items():
+    for nameobj, objs in list(objdict.items()):
         prev_scope = None
         for obj, scope in objs:
             if hasattr(obj, name):
@@ -306,7 +306,7 @@ def suggest_name_as_name_typo(name, objdict):
 
     Example: 'foobaf' -> 'foobar'.
     """
-    for name in get_close_matches(name, objdict.keys()):
+    for name in get_close_matches(name, list(objdict.keys())):
         yield quote(name) + ' (' + objdict[name][0].scope + ')'
 
 
@@ -636,7 +636,7 @@ def get_func_by_name(func_name, frame):
     # for objects. We would go deeper (with a fixed point algorithm) but
     # it doesn't seem to be worth it. In any case, we'll be missing a few
     # possible functions.
-    objects = [o.obj for lst in objs.values() for o in lst]
+    objects = [o.obj for lst in list(objs.values()) for o in lst]
     for obj in list(objects):
         for a in dir(obj):
             attr = getattr(obj, a, None)
@@ -899,7 +899,7 @@ def get_suggestions_for_exception(value, traceback):
     frame = get_last_frame(traceback)
     return itertools.chain.from_iterable(
             func(value, frame)
-            for error_type, functions in SUGGESTION_FUNCTIONS.items()
+            for error_type, functions in list(SUGGESTION_FUNCTIONS.items())
             if isinstance(value, error_type)
             for func in functions)
 
